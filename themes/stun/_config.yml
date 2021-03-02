@@ -50,7 +50,7 @@ sougou_site_verification:
 # Usage(No Icon)  : `Key: /link/`
 # Select your icon name, see: https://fontawesome.com/icons
 menu:
-  home: / || fas fa-home
+  home: /flbBlog || fas fa-home
   archives: /flbBlog/archives/ || fas fa-folder-open
   # categories: /categories/ || fas fa-layer-group
   # tags: /tags/ || fas fa-tags
