@@ -1,0 +1,100 @@
+---
+title: 命令模式
+date: 2020-03-16 11:43:03
+tags:
+---
+
+<style>
+  #app_mingling {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  #app_mingling .ctxx {
+    width: 100%;
+    background-color: #ddd;
+    margin-top: 40px;
+  }
+  #app_mingling .ctxx .box {
+    width: 25px;
+    height: 15px;
+    background-color: #ff5b5c;
+  }
+</style>
+<body>
+  <div id="app_mingling">
+    Receive接收者角色该角色就是干活的角色,命令传递到这里是应该被执行的
+    Command命令角色需要执行的所有命令都在这里声明。
+    Invoker调用者角色接收到命令,并执行命令。 Invoker -> Command -> Receice
+    <h1>
+      命令模式（发出的请求，通过Command命令层，Command命令层执行后，到具体的received层执行具体动作）
+    </h1>
+    <button id="left">向左</button>
+    <button id="right">向右</button>
+    <button id="turnback">撤销</button>
+    <div style="margin-top: 20px">
+      <strong> history: </strong><span id="history"></span>
+    </div>
+    <div class="ctxx">
+      <div id="box" class="box"></div>
+    </div>
+    转载自作者：alanyf 链接：https://juejin.cn/post/6909253882217103374
+    来源：掘金
+  </div>
+  <script>
+    const step = 25;
+    const right = document.getElementById("right");
+    const left = document.getElementById("left");
+    const turnback = document.getElementById("turnback");
+    const historyLog = document.getElementById("history");
+
+    class Box {
+      constructor({ pos = 0, id }) {
+        this.pos = pos;
+        this.$box = document.getElementById(id);
+        this.update();
+      }
+      moveTo(pos) {
+        this.pos = pos;
+        this.update();
+      }
+      update() {
+        this.$box.style.marginLeft = this.pos + "px";
+      }
+    }
+
+    class Command {
+      constructor(box) {
+        this.pos = box.pos || 0;
+        this.box = box;
+        this.history = [this.pos];
+        historyLog.innerText = this.history;
+      }
+      run(dis) {
+        this.pos = (this.pos || 0) + dis;
+        this.box.moveTo(this.pos);
+        this.history.push(this.pos);
+        historyLog.innerText = this.history;
+        console.log("run:", this.pos, this.history);
+      }
+      cancel() {
+        if (this.history.length === 0) {
+          alert("回到起点");
+          return;
+        }
+        const record = this.history.pop();
+        this.pos = this.history[this.history.length - 1];
+        this.box.moveTo(this.pos);
+        historyLog.innerText = this.history;
+        console.log("cancel:", record, this.history);
+      }
+    }
+
+    const box = new Box({ id: "box", pos: 2 * step });
+    const command = new Command(box);
+
+    right.addEventListener("click", () => command.run(step));
+    left.addEventListener("click", () => command.run(-step));
+    turnback.addEventListener("click", () => command.cancel());
+  </script>
+</body>
